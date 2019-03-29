@@ -9,10 +9,11 @@ import {
 import NavigationUtil from './../navigator/NavigationUtil'
 import PopularItem from './../common/PopularItem'
 import { RotationGestureHandler } from 'react-native-gesture-handler';
+import NavigationBar from './../common/NavigationBar'
 
 const URL = 'https://api.github.com/search/repositories?q='
 const QUERY_STR = '&sort=stars'
-const THEME_COLOR="red"
+const THEME_COLOR="#678"
 const pageSize =10
 
 
@@ -38,6 +39,16 @@ class PopularPage extends React.Component {
     }
 
     render() {
+
+        let statusBar = {
+            backgroundColor:THEME_COLOR,
+            barStyle:'light-content',
+        }
+        let navigationBar = <NavigationBar 
+            title={'最热'}
+            statusBar={statusBar}
+            style={{backgroundColor}}
+        />
         const TabNavigator = createAppContainer(createMaterialTopTabNavigator(this._genTabs(),{
             tabBarOptions: {
                 tabStyle:styles.tabStyle,
@@ -143,7 +154,7 @@ class PopularTab extends React.Component {
             </View>
     }
     render() {
-        const { tabLabel,popular } = this.props;
+        // const { tabLabel,popular } = this.props;
         let store = this._store()
         return (
             <View>
