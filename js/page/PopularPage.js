@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, View, Text ,FlatList ,RefreshControl} from 'react-native'
+import { StyleSheet, View, Text ,FlatList ,RefreshControl,ActivityIndicator} from 'react-native'
 import { connect } from 'react-redux'
 import actions from './../action'
 import {
@@ -8,10 +8,12 @@ import {
 } from 'react-navigation'
 import NavigationUtil from './../navigator/NavigationUtil'
 import PopularItem from './../common/PopularItem'
+import { RotationGestureHandler } from 'react-native-gesture-handler';
 
 const URL = 'https://api.github.com/search/repositories?q='
 const QUERY_STR = '&sort=stars'
 const THEME_COLOR="red"
+const pageSize =10
 
 
 class PopularPage extends React.Component {
@@ -68,6 +70,13 @@ const styles = StyleSheet.create({
         fontSize:13,
         marginTop:6,
         marginBottom:6
+    },
+    indicatorContainer: {
+        alignItems:'center'  
+    },
+    indicatior: {
+       color:'red',
+       margin:10 
     }
 })
 
@@ -81,12 +90,34 @@ class PopularTab extends React.Component {
     }
 
     componentDidMount() {
-        this.loadData()
+        this.loadData(false)
     }
 
-    loadData() {
+    loadData(loadMore) {
+        const store = this._store();
         const url = this.genFetchUrl(this.storename)
-        this.props.onLoadPopularData(this.storename,url)
+
+        if(loadMore) {
+            this.props.onLoadMorePopular(this.storename,++store.pageIndex,pageSize,store.items,callback=> {
+                console.log(' 没有更多')
+            })
+        } else {
+            this.props.onRefreshPopular(this.storename,url,pageSize)
+        }
+    }
+
+    _store() {
+        const { popular } = this.props;
+        let store = popular[this.storename]
+        if( !store) {
+            store = {
+                items:[],
+                isLoading:false,
+                projectModes:[],//要显示的数据
+                hideLoadingMore:true, //默认隐藏加载更多
+            }
+        }
+        return store;
     }
 
     genFetchUrl(key) {
@@ -102,19 +133,22 @@ class PopularTab extends React.Component {
                     }}
                 />
     }
+    genIndicatior() {
+        return this._store().hideLoadingMore ? null:
+            <View style={styles.indicatorContainer}>
+                <ActivityIndicator 
+                    style={styles.indicatior}
+                />
+                <Text>正在加载更多</Text>
+            </View>
+    }
     render() {
         const { tabLabel,popular } = this.props;
-        let store = popular[this.storename]
-        if( !store) {
-            store = {
-                items:[],
-                isLoading:false
-            }
-        }
+        let store = this._store()
         return (
             <View>
                 <FlatList 
-                    data={store.items}
+                    data={store.projectModes}
                     renderItem={data => this.renderItem(data)}
                     keyExtractor={item => "" + item.id}
                     refreshControl={
@@ -123,10 +157,24 @@ class PopularTab extends React.Component {
                             titleColor={THEME_COLOR}
                             colors={[THEME_COLOR]}
                             refreshing={store.isLoading}
-                            onRefresh={() => this.loadData()}
+                            onRefresh={() => this.loadData(false)}
                             tintColor={THEME_COLOR}
                         />
                     }
+                    ListFooterComponent={()=>this.genIndicatior()}
+                    onEndReached={() => {
+                        console.log('-------')
+                        setTimeout(() => {
+                            if(this.canLoadMore) {
+                                this.loadData(true)
+                                this.canLoadMore=false
+                            }
+                        },100)
+                    }}
+                    onEndReachedThreshold={0.5}
+                    onMomentumScrollBegin={() => {
+                        this.canLoadMore = true
+                    }}
                 />
                 {/* <Text>{tabLabel}</Text>
                 <Text onPress={() => {
@@ -143,7 +191,8 @@ const mapStateToProps = state => {
     return {popular:state.popular}
 }
 const mapDispatchToProps = dispatch => ({
-    onLoadPopularData:(storename,url) => dispatch(actions.onLoadPopularData(storename,url))
+    onRefreshPopular:(storename,url,pageSize) => dispatch(actions.onLoadPopularData(storename,url,pageSize)),
+    onLoadMorePopular:(storename,pageIndex,pageSize,items,callback) => dispatch(actions.onLoadMorePopular(storename,pageIndex,pageSize,items,callback))
 })
 
 const PoplarTabPage = connect(mapStateToProps,mapDispatchToProps)(PopularTab);
