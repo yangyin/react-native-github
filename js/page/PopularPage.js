@@ -9,6 +9,7 @@ import {
 import NavigationUtil from './../navigator/NavigationUtil'
 import PopularItem from './../common/PopularItem'
 import { RotationGestureHandler } from 'react-native-gesture-handler';
+
 import NavigationBar from './../common/NavigationBar'
 
 const URL = 'https://api.github.com/search/repositories?q='
@@ -47,7 +48,7 @@ class PopularPage extends React.Component {
         let navigationBar = <NavigationBar 
             title={'最热'}
             statusBar={statusBar}
-            style={{backgroundColor}}
+            style={{backgroundColor:THEME_COLOR}}
         />
         const TabNavigator = createAppContainer(createMaterialTopTabNavigator(this._genTabs(),{
             tabBarOptions: {
@@ -61,10 +62,12 @@ class PopularPage extends React.Component {
                 labelStyle:styles.labelStyle,//文字样式
             }
         }))
+        
         return (
-            // <View>
+            <View style={{flex:1}}>
+                {navigationBar}
                 <TabNavigator />
-            // </View>
+            </View>
         )
     }
 }
@@ -107,7 +110,6 @@ class PopularTab extends React.Component {
     loadData(loadMore) {
         const store = this._store();
         const url = this.genFetchUrl(this.storename)
-
         if(loadMore) {
             this.props.onLoadMorePopular(this.storename,++store.pageIndex,pageSize,store.items,callback=> {
                 console.log(' 没有更多')
@@ -156,6 +158,7 @@ class PopularTab extends React.Component {
     render() {
         // const { tabLabel,popular } = this.props;
         let store = this._store()
+        console.log('*****',store.projectModes)
         return (
             <View>
                 <FlatList 
@@ -174,7 +177,6 @@ class PopularTab extends React.Component {
                     }
                     ListFooterComponent={()=>this.genIndicatior()}
                     onEndReached={() => {
-                        console.log('-------')
                         setTimeout(() => {
                             if(this.canLoadMore) {
                                 this.loadData(true)

@@ -1,6 +1,6 @@
 import React,{Component } from 'react'
-import { PropTypes ,View,Text,Statusbar,StyleSheet , Platform} from 'prop-types'
-import { ViewPropTypes } from 'react-native'
+import { View,Text,StatusBar,StyleSheet, Platform,ViewPropTypes} from 'react-native'
+import PropTypes from 'prop-types'
 
 const NAV_BAR_HEIGHT_IOS = 44 //导航栏在ios中的高度
 const NAV_BAR_HEIGHT_ANDROID = 50 //导航栏在android中的高度
@@ -14,7 +14,7 @@ const StatusBarShape = { //设置状态栏所接受的属性
     backgroundColor:PropTypes.string
 }
 
-export default class NavigationBar extends Component {
+class NavigationBar extends Component {
     static propTypes = {
         style:ViewPropTypes.style,
         title:PropTypes.string,
@@ -45,7 +45,7 @@ export default class NavigationBar extends Component {
     render() {
         let statusBar = !this.props.statusBar.hidden ? 
             <View style={styles.statusBar}>
-                <Statusbar {...this.props.statusBar} />
+                <StatusBar {...this.props.statusBar} />
             </View> : null;
         let titleView = this.props.titleView ? 
             this.props.titleView : 
@@ -69,6 +69,8 @@ export default class NavigationBar extends Component {
         )
     }
 }
+
+
 
 
 const styles = StyleSheet.create({
@@ -101,3 +103,5 @@ const styles = StyleSheet.create({
         height:Platform.OS === 'ios' ? STATUS_BAR_HEIGHT : 0
     }
 })
+
+export default NavigationBar

@@ -8,6 +8,7 @@ export default class PopularItem extends Component {
 
     render() {
         const { item } = this.props
+        console.log('item &&&',item);
         if(!item || !item.owner) return null;
         let favoriteButton = <TouchableOpacity
             style={{padding:6}}
