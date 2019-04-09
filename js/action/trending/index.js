@@ -1,15 +1,15 @@
 import Types from '../types'
 import DataStore, { FLAG_STORAGE } from './../../expand/dao/DataStore'
-import { handleData } from './../ActionUtil';
+import { handleData } from './../ActionUtil'
 
-export const onLoadPopularData =(storename,url,pageSize)=> {
+export const onRefeshTrending =(storename,url,pageSize)=> {
     return dispatch => {
-        dispatch({type:Types.POPULAR_REFRESH,storename})
+        dispatch({type:Types.TRENGING_REFRESH,storename})
 
         let dataStore = new DataStore();
-        dataStore.fetchData(url,FLAG_STORAGE.flag_popular)
+        dataStore.fetchData(url,FLAG_STORAGE.flag_trending)
         .then(data =>{
-            handleData(Types.POPULAR_REFRESH_SUCCESS,dispatch,storename,data,pageSize)
+            handleData(Types.TRENGING_REFRESH_SUCCESS,dispatch,storename,data,pageSize)
         })
         .catch(error => {
             console.log(error);
@@ -45,7 +45,7 @@ export const onLoadPopularData =(storename,url,pageSize)=> {
  * @param {*} dataArray 原始数据
  * @param {*} callback 通过回调向调用页面通信：比如异常展示，没有更多等待
  */
-export function onLoadMorePopular(storename,pageIndex,pageSize,dataArray=[],callback) {
+export function onLoadMoreTrending(storename,pageIndex,pageSize,dataArray=[],callback) {
     return dispatch => {
         setTimeout(() => {
             if( (pageIndex -1)*pageSize >= dataArray.length) { //已加载完全部数据
@@ -53,7 +53,7 @@ export function onLoadMorePopular(storename,pageIndex,pageSize,dataArray=[],call
                     callback('no more')
                 }
                 dispatch({
-                    type:Types.POPULAR_LOAD_MORE_FAIL,
+                    type:Types.TRENGING_LOAD_MORE_FAIL,
                     error:'no more',
                     storename,
                     pageIndex:--pageIndex,
@@ -63,7 +63,7 @@ export function onLoadMorePopular(storename,pageIndex,pageSize,dataArray=[],call
                 //本次和载入的最大数量
                 let max = pageSize*pageIndex > dataArray.length ? dataArray.length : pageSize*pageIndex;
                 dispatch({
-                    type:Types.POPULAR_LOAD_MORE_SUCCESS,
+                    type:Types.TRENGING_LOAD_MORE_SUCCESS,
                     storename,
                     pageIndex,
                     projectModes: dataArray.slice(0,max)

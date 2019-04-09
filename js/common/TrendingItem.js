@@ -1,14 +1,15 @@
 import React,{ Component } from 'react'
 import { TouchableOpacity ,View,Text,Image,StyleSheet} from 'react-native'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
+import HTMLView from 'react-native-htmlview'
 
 
-export default class PopularItem extends Component {
+export default class TrendingItem extends Component {
 
 
     render() {
         const { item } = this.props
-        if(!item || !item.owner) return null;
+        if(!item ) return null;
         let favoriteButton = <TouchableOpacity
             style={{padding:6}}
             onPress={() => {
@@ -18,23 +19,38 @@ export default class PopularItem extends Component {
         >
             <FontAwesome name={'star-o'} size={26} style={{color:'red'}} />
         </TouchableOpacity>
+        let description = `<p>${item.description}</p>`
         return (
             <TouchableOpacity
                 onPress={this.props.onSelect}
             >
                 <View style={styles.cell}>
                     <Text style={styles.title}>{ item.full_name}</Text>    
-                    <Text style={styles.desc}>{ item.description}</Text>    
+                    {/* <Text style={styles.desc}>{ item.description}</Text>     */}
+                    <HTMLView 
+                        value={description}
+                        onLinkPress={url => {}}
+                        stylesheet={{
+                            p:styles.desc,
+                            a:styles.desc
+                        }}
+                    />
+                    <Text style={styles.desc}>{ item.meta}</Text>    
                     <View style={styles.row }>
                         <View style={styles.row }>
-                            <Text>Author:</Text>
-                            <Image style={{height:22,width:22}} 
-                                source={{uri:item.owner.avatar_url}}
-                            />
+                            <Text>Built by: </Text>
+                            {
+                                item['contributors'].map((result,i,arr) => (
+                                    <Image key={i} style={{height:22,width:22,margin:2}} 
+                                        source={{uri:result}}
+                                    />
+                                ))
+                            }
+                            
                         </View>
                         <View style={styles.row }>
                             <Text>Start:</Text>
-                            <Text>{item.stargazers_count}</Text>
+                            <Text>{item.starCount}</Text>
                         </View>
                         {favoriteButton}
                     </View>

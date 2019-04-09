@@ -56,7 +56,8 @@ class PopularPage extends React.Component {
                 upperCaseLabel:false, //是否标签大写
                 scrollEnabled:true,//是否支持选项卡滚动
                 style:{
-                    backgroundColor:'#678'
+                    backgroundColor:'#678',
+                    height:30
                 },
                 indicatorStyle:styles.indicatorStyle,
                 labelStyle:styles.labelStyle,//文字样式
@@ -74,7 +75,8 @@ class PopularPage extends React.Component {
 
 const styles = StyleSheet.create({
     tabStyle: {
-        minWidth:50
+        // minWidth:50
+        padding:0
     },
     indicatorStyle: {
         height:2,
@@ -82,8 +84,7 @@ const styles = StyleSheet.create({
     },
     labelStyle:{
         fontSize:13,
-        marginTop:6,
-        marginBottom:6
+        margin:0
     },
     indicatorContainer: {
         alignItems:'center'  
