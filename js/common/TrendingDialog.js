@@ -1,5 +1,5 @@
 import React from 'react'
-import { View,Text,Modal,StyleSheet ,TouchableOpacity} from 'react-native'
+import { View,Text,Modal,StyleSheet ,TouchableOpacity,DeviceInfo} from 'react-native'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 
 import TimeSpan from './../modal/TimeSpan'
@@ -11,15 +11,15 @@ export default class TrendingDialog extends React.Component {
         visible:false
     }
 
-    close() {
+    show() {
         this.setState({
-            visible:false
+            visible:true
         })
     }
 
     dismiss() {
         this.setState({
-            visible:true
+            visible:false
         })
     }
 
@@ -36,22 +36,24 @@ export default class TrendingDialog extends React.Component {
                     onPress={() => this.dismiss()}
                 >
                     <MaterialIcons 
-                        name="all-drop-up"
+                        name={"arrow-drop-up"}
                         size={36}
                         style={styles.arrow}
                     />
                     <View style={styles.content}>
                         { TimeSpans.map((result,i) => (
                             <TouchableOpacity
+                                key={i}
                                 onPress={()=>onSelect(result)}
                                 underlayColor="transparent"
                             >
                                 <View style={styles.text_container}>
                                     <Text style={styles.text}>{result.showText}</Text>
-                                    {
-                                        i !== TimeSpans.length-1 ? <View style={styles.line} />:null
-                                    }
+                                    
                                 </View>
+                                {
+                                    i !== TimeSpans.length-1 ? <View style={styles.line} />:null
+                                }
                             </TouchableOpacity>
                         ))}
                     </View>
@@ -66,7 +68,8 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor:'rgba(0,0,0,.6)',
         flex:1,
-        alignItems:'center'
+        alignItems:'center',
+        paddingTop:DeviceInfo.isIPhoneX_deprecated ? 30 : 0
     },
     arrow: {
         marginTop:40,
@@ -88,7 +91,7 @@ const styles = StyleSheet.create({
     text: {
         fontSize:16,
         color:'#000',
-        fontWeight:400,
+        fontWeight:'400',
         padding:8,
         paddingLeft:26,
         paddingRight:26

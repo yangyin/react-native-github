@@ -8,7 +8,6 @@ import {
 } from 'react-navigation'
 import NavigationUtil from './../navigator/NavigationUtil'
 import PopularItem from './../common/PopularItem'
-import { RotationGestureHandler } from 'react-native-gesture-handler';
 
 import NavigationBar from './../common/NavigationBar'
 
@@ -143,7 +142,9 @@ class PopularTab extends React.Component {
         return <PopularItem 
                     item={item}
                     onSelect={() => {
-
+                        NavigationUtil.goPage({
+                            projectModel:item,
+                        },'DetailPage')
                     }}
                 />
     }

@@ -2,21 +2,27 @@ import React from 'react'
 import { StyleSheet, BackHandler } from 'react-native'
 import {
     NavigationActions
-} from 'react-navigation';
-import { connect } from 'react-redux';
+} from 'react-navigation'
+import { connect } from 'react-redux'
 
-import NavigationUtil from '../navigator/NavigationUtil';
-import DynamicTabNavigator from '../navigator/DynamicTabNavigator';
+import NavigationUtil from '../navigator/NavigationUtil'
+import DynamicTabNavigator from '../navigator/DynamicTabNavigator'
+import BackPressComponent from '../common/BackPressComponent'
 
 
 class HomePage extends React.Component {
 
+    constructor(props) {
+        super(props)
+        this.backPress = new BackPressComponent({backPress:this.onBackPress()})
+    }
+
     componentDidMount() {
-        BackHandler.addEventListener('hardwareBackPress',this.onBackPress)
+        this.backPress.componentDidMount()
     }
 
     componentWillUnmount() {
-        BackHandler.removeEventListener('hardwareBackPress',this.onBackPress)
+        this.backPress.componentWillUnmount()
     }
 
     onBackPress = () => {
